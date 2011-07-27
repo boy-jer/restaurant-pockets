@@ -1,14 +1,16 @@
 require 'sinatra'
-require 'datamapper'
+require 'activerecord'
 
-DataMapper::Database.setup({
-  :adapter  => 'sqlite3',
-  :host     => 'localhost',
-  :username => '',
-  :password => '',
-  :database => 'db/restaurant_development'
-})
+db = URI.parse(ENV['DATABASE_URL'] || 'postgres://localhost/mydb')
 
+ActiveRecord::Base.establish_connection(
+  :adapter  => db.scheme == 'postgres' ? 'postgresql' : db.scheme,
+  :host     => db.host,
+  :username => db.user,
+  :password => db.password,
+  :database => db.path[1..-1],
+  :encoding => 'utf8'
+)
 
 get '/' do
   "Hello World!"
