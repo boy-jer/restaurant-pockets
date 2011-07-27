@@ -1,3 +1,3 @@
-require './hello'
+require './controller'
 run Sinatra::Application
 
