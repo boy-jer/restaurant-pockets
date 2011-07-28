@@ -5,8 +5,8 @@ require 'haml'
 set :haml, :format => :html5
 
 get '/' do  
-  @test = "Can you do it?"
-  @lst = [41...47]
+  test = "Can you do it?"
+  lst = [41...47]
   haml :index
 end
 
