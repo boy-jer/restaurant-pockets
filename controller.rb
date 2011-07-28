@@ -1,16 +1,5 @@
 require 'sinatra'
-require 'activerecord'
-
-db = URI.parse(ENV['DATABASE_URL'] || 'postgres://localhost/mydb')
-
-ActiveRecord::Base.establish_connection(
-  :adapter  => db.scheme == 'postgres' ? 'postgresql' : db.scheme,
-  :host     => db.host,
-  :username => db.user,
-  :password => db.password,
-  :database => db.path[1..-1],
-  :encoding => 'utf8'
-)
+require 'mongo'
 
 get '/' do
   "Hello World!"
@@ -18,4 +7,19 @@ end
 
 get '/hello/:name' do |n|
     "Hello #{n}"
+end
+
+
+post '/add' do
+  name = params[:name]
+  db = Mongo::Connection.new("staff.mongohq.com/restaurant", 10016).db("database")
+  auth = db.authenticate("chris", "password")
+  coll = db.collection("restaurants")
+  doc = {"name" => name}
+  coll.insert(doc)
+  if request.xhr?
+    "true"
+  else
+    "We've added your restaurant"
+  end
 end
