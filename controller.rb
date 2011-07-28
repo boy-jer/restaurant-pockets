@@ -2,9 +2,11 @@ require 'sinatra'
 require 'mongo'
 require 'haml'
 
+set :haml, :format => :html5
 
 get '/' do  
-  @test = :this
+  @test = "Can you do it?"
+  @lst = [41...47]
   haml :index
 end
 
