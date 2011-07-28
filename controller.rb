@@ -4,6 +4,7 @@ require 'haml'
 
 
 get '/' do  
+  @test = :this
   haml :index
 end
 
