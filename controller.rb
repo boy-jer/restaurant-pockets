@@ -1,8 +1,10 @@
 require 'sinatra'
 require 'mongo'
+require 'haml'
 
-get '/' do
-  "Hello World!"
+
+get '/' do  
+  haml :index
 end
 
 get '/hello/:name' do |n|
