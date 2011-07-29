@@ -1,9 +1,11 @@
-require 'sinatra'
-require 'mongo_mapper'
 require 'haml'
+require 'mongo_mapper'
+require 'sinatra'
+
 require './secret'
 
 set :haml, :format => :html5
+set :public, File.dirname(__FILE__) + '/static'
 
 MongoMapper.connection = Mongo::Connection.new('staff.mongohq.com', 10016)
 MongoMapper.database = 'restaurant'
@@ -38,7 +40,6 @@ module Sinatra::Partials
     end
   end
 end
-
 
 
 class Restaurant 
@@ -141,6 +142,7 @@ class Reservation
 
   def is_free? group
     self.has_table? group and self.resertaurant.get_open(self)[group] > 0
+  end
     
 
   def increment group 
@@ -196,6 +198,3 @@ class RestaurantManager < Sinatra::Base
   end
 
 end
-
-
-
