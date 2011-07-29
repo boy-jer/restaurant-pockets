@@ -126,6 +126,7 @@ class RestaurantManager < Sinatra::Base
 
   get '/' do  
     @restaurants = Restaurant.all
+    @api_key = Secret.google_api_key
     haml :index
   end
 
