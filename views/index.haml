@@ -5,8 +5,8 @@
     .content 
       %h22 Hello, World
       %p Way to go world
-      %p= this
+      %p= @this
 
-      - (42...47).each do |i|
+      - @lst.each do |i|
         %p= i
 
