@@ -164,6 +164,14 @@ class RestaurantManager < Sinatra::Base
     haml :index
   end
 
+  get '/style.css' do
+    render "style.css"
+  end
+
+  get '/jquery.ui.datepicker.css' do 
+    render 'jquery.ui.datepicker.css'
+  end
+
   post '/add' do
     name = params[:name]
   end
