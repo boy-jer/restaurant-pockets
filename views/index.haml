@@ -2,11 +2,18 @@
   %head
 
   %body
-    .content 
-      %h22 Hello, World
-      %p Way to go world
-      %p= @this
+    .content
+      %h2 Where do you want to eat?
 
-      - @lst.each do |i|
-        %p= i
+      %form{:action => "/detail"}
+        %select#restaurants
+          - @restaurants.each do |restaurant|
+            %option{:value => restaurant.name }= restaurant.name
 
+        %select#patrons
+          - (1..8).each do |patrons|
+            %option{:value => patrons}= patrons
+
+        %input{:type => "submit"}
+
+            
