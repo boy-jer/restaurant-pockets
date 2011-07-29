@@ -1,57 +1,40 @@
-%html
-  %head
-    %title FakeTable
-    %meta{"http-equiv" => "Content-Type",  :content =>"text/html;charset=utf-8"}
- 
-    %link{:rel =>"stylesheet", :href => "http://media.chirs.name/css/style.css", :type => "text/css", :media => "screen, print"}
-
-    %script{:type => "text/javascript",  :src => "https://www.google.com/jsapi?key=#{@api_key}" }
-    %script{:type => "text/javascript", :src => "https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"}
-    %script{:type => "text/javascript", :src => "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"}
-
-    :javascript
-      jQuery(function(){
-          $( "#datepicker" ).datepicker();
-      });
-
-  %body
-    .content
-      %h2 Where do you want to eat?
+.content
+  %h2 Where do you want to eat?
       
-      %form{:action => "/reservation"}
-        %ul
-          %li
-            %select#restaurants{:name => "name" }
-              - @restaurants.each do |restaurant|
-                %option{:value => restaurant.name }= restaurant.name
+  %form{:action => "/reservation"}
+    %ul
+      %li
+        %select#restaurants{:name => "name" }
+          - @restaurants.each do |restaurant|
+            %option{:value => restaurant.name }= restaurant.name
 
-          %li
-            %select#group{:name => "group" }
-              - (1..8).each do |group|
-                %option{:value => group}= group
+      %li
+        %select#group{:name => "group" }
+          - (1..8).each do |group|
+            %option{:value => group}= group
 
-          %li
-            Date:
-            %input{:id => "datepicker", :type => "text"}
+      %li
+        Date:
+        %input{:id => "datepicker", :type => "text"}
 
-          %li
-            %label{:for => "year"} Year:
-            %input{:type => "text", :name => "year", :class => "text"}
+      %li
+        %label{:for => "year"} Year:
+        %input{:type => "text", :name => "year", :class => "text"}
 
-          %li
-            %label{:for => "month"} Month:
-            %input{:type => "text", :name => "month", :class => "text"}
+      %li
+        %label{:for => "month"} Month:
+        %input{:type => "text", :name => "month", :class => "text"}
 
 
-          %li
-            %label{:for => "day"} Day:
-            %input{:type => "text", :name => "dayh", :class => "text"}
+      %li
+        %label{:for => "day"} Day:
+        %input{:type => "text", :name => "dayh", :class => "text"}
 
-          %li
-            %label{:for => "hour"} Hour:
-            %input{:type => "text", :name => "hour", :class => "text"}
+      %li
+        %label{:for => "hour"} Hour:
+        %input{:type => "text", :name => "hour", :class => "text"}
 
-          %li
-            %input{:type => "submit"}
+      %li
+        %input{:type => "submit"}
 
             
