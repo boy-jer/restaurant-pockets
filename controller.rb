@@ -9,17 +9,12 @@ MongoMapper.connection = Mongo::Connection.new('staff.mongohq.com', 10016)
 MongoMapper.database = 'restaurant'
 MongoMapper.database.authenticate(Secret.username, Secret.password)
 
-def hash_keys_to_str(h)
-  h2 = {}
-  h.each_pair {|k,v| h2[k.to_s] = v }
-  h2
+def copy_hash h 
+    h2 = {}
+    h.each_pair {|k,v| h2[k] = v }
+    h2
 end
 
-def hash_keys_to_int(h)
-  h2 = {}
-  h.each_pair {|k,v| h2[k.to_i] = v }
-  h2
-end
 
 class Restaurant 
   include MongoMapper::Document
@@ -30,23 +25,12 @@ class Restaurant
   many :reservations
 
 
-end
-
-class Fake
-
   def get_tables
-    hash_keys_to_int(self.tables)
+    copy_hash self.tables
   end
-
-
-    
 
   def make_blank_tables
-    self.tables.merge(self.tables){ 0 }
-  end
-
-  def has_table? count
-    self.tables.has_key? count
+    self.get_tables.merge(self.get_tables){ 0 }
   end
 
   def create_reservation time
@@ -54,43 +38,63 @@ class Fake
                               :tables => self.make_blank_tables})
   end
 
-  def get_reservation time
-    self.reservation.first(:time => time)
-  end
-
-  def check_time time
+  def valid_time? time
     [0, 30].include? time.min
   end
-    
-  def get_open_for_time time
-    r = self.reservations.first(:time => time)
-    self.get_open r
+
+  def has_table? group
+    self.tables.has_key? group
   end
 
   def get_open reservation
-    self.tables.merge(reservation.tables){|k, old, new| new - old}
+    reservation_tables = copy_hash reservation.tables
+    self.get_tables.merge(reservation_tables){|k, old, new| old - new}
   end
 
-  def is_open(time, count)
+
+  def meal_times start
+    [0,30,60,90].map {|min| start + min * 60 }
+  end
+
+  def open_table? (time, group)
     r = self.reservations.first(:time => time)
-    !!self.get_open(r).count # Coerce boolean
-  end
-
-  def reserve(time, count)
-    if check_time(time)
-      r = self.reservations.first(:time => time)
-      unless r
-        r = self.create_reservation time
-      end
-      r.tables[count] = r.tables.fetch(count, 0) + 1
-      true
+    unless r
+      r = self.create_reservation time
     end
-    false
-    
+    self.get_open(r)[group] > 0
   end
-    
-end
+  
+  def open_tables? (times, group)
+    times.reduce(true) {|acc, time| acc and self.open_table?(time, group)}
+  end
 
+  def can_reserve? (time, group)
+    times = self.meal_times time
+    self.has_table? group and self.open_tables? times, group
+  end
+  
+  def reserve(time, group)
+    # Check that
+    # 1. Time is valid
+    # 1. Restaurant can seat the table for needed times.
+    if self.can_reserve? time, group
+      times = self.meal_times time
+      times.each { |time|
+        r = self.reservations.first(:time => time)
+        unless r
+          r = self.create_reservation time
+        end
+        # Complicated because hashes are apparently static.
+        r.increment group
+      }
+      true
+    else
+      false
+    end
+  end
+
+
+end
 
 
 class Reservation
@@ -100,6 +104,12 @@ class Reservation
   key :tables, Hash
 
   belongs_to :restaurant
+
+  def increment group 
+    val = self.tables[group]
+    self.tables[group] = val + 1
+    self.save()
+  end
 
 
 end
