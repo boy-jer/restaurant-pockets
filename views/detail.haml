@@ -3,8 +3,9 @@
 
   %body
     .content 
-      %h2 @restaurant.name
-      %ul
-      - @restaurant.tables.each_pair do |table, count|
-        %li= restaurant.name
+      %h2= @restaurant.name
+
+      %p= @restaurant.tables
+
+
 

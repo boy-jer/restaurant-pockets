@@ -33,6 +33,14 @@ class Restaurant
     self.get_tables.merge(self.get_tables){ 0 }
   end
 
+  def get_or_create_reservation time
+    r = self.reservations.first(:time => time)
+    unless r
+      r = self.create_reservation time
+    end
+  end
+
+
   def create_reservation time
     self.reservations.create({:time => time, 
                               :tables => self.make_blank_tables})
@@ -57,10 +65,7 @@ class Restaurant
   end
 
   def open_table? (time, group)
-    r = self.reservations.first(:time => time)
-    unless r
-      r = self.create_reservation time
-    end
+    r = self.get_or_create_reservation time
     self.get_open(r)[group] > 0
   end
   
@@ -80,11 +85,7 @@ class Restaurant
     if self.can_reserve? time, group
       times = self.meal_times time
       times.each { |time|
-        r = self.reservations.first(:time => time)
-        unless r
-          r = self.create_reservation time
-        end
-        # Complicated because hashes are apparently static.
+        r = self.get_or_create_reservation time
         r.increment group
       }
       true
@@ -105,7 +106,13 @@ class Reservation
 
   belongs_to :restaurant
 
+  def nearby_reservations count
+    times = (-count..count).map {|i| self.time + 30 * 60 * i }
+    times.map {|t| Reservation.first(:time => time) }
+  end
+
   def increment group 
+    # Watch out! hashes are apparently static.
     val = self.tables[group]
     self.tables[group] = val + 1
     self.save()
@@ -131,8 +138,26 @@ class RestaurantManager < Sinatra::Base
     haml :list
   end
 
-  get '/detail/:name' do
-    @restaurant = Restaurant.first(:name => :name)
+  get '/reservation' do
+    @group = params[:group]
+    @restaurant = Restaurant.first(:name => params[:name])
+    time = Time.new(params[:year],
+                    params[:month],
+                    params[:day],
+                    params[:hour],
+                    0)
+    @reservation = @restaurant.reservations.first(:time => time)
+                    
+    haml :reservation
+  end
+    
+    
+                    
+
+  get '/detail' do
+    @restaurant = Restaurant.first(:name => params[:restaurant_name])
+    @group = params[:group]
+    
     haml :detail
   end
 

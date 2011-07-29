@@ -1,19 +1,41 @@
 %html
   %head
+    %script{:type => "text/javascript", :src => "https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"}
+      
+    %body
+      .content
+        %h2 Where do you want to eat?
+        
+        %form{:action => "/reservation"}
+          %ul
+            %li
+              %select#restaurants{:name => "name" }
+                - @restaurants.each do |restaurant|
+                  %option{:value => restaurant.name }= restaurant.name
 
-  %body
-    .content
-      %h2 Where do you want to eat?
+            %li
+              %select#group{:name => "group" }
+                - (1..8).each do |group|
+                  %option{:value => group}= group
 
-      %form{:action => "/detail"}
-        %select#restaurants
-          - @restaurants.each do |restaurant|
-            %option{:value => restaurant.name }= restaurant.name
+            %li
+              %label{:for => "year"} Year:
+              %input{:type => "text", :name => "year", :class => "text"}
 
-        %select#patrons
-          - (1..8).each do |patrons|
-            %option{:value => patrons}= patrons
+            %li
+              %label{:for => "month"} Month:
+              %input{:type => "text", :name => "month", :class => "text"}
 
-        %input{:type => "submit"}
+
+            %li
+              %label{:for => "day"} Day:
+              %input{:type => "text", :name => "dayh", :class => "text"}
+
+            %li
+              %label{:for => "hour"} Hour:
+              %input{:type => "text", :name => "hour", :class => "text"}
+
+            %li
+              %input{:type => "submit"}
 
             
