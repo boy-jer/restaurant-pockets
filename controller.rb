@@ -1,11 +1,15 @@
 require 'haml'
 require 'mongo_mapper'
+require 'sass'
 require 'sinatra'
+
 
 require './secret'
 
 set :haml, :format => :html5
 set :public, File.dirname(__FILE__) + '/static'
+set :scss, :style => :compact # default Scss style is :nested
+
 
 MongoMapper.connection = Mongo::Connection.new('staff.mongohq.com', 10016)
 MongoMapper.database = 'restaurant'
@@ -165,11 +169,11 @@ class RestaurantManager < Sinatra::Base
   end
 
   get '/style.css' do
-    render "style.css"
+    scss :style
   end
 
   get '/jquery.ui.datepicker.css' do 
-    render 'jquery.ui.datepicker.css'
+    scss :jquery.ui.datepicker
   end
 
   post '/add' do
