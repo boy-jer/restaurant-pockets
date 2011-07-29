@@ -9,6 +9,8 @@ MongoMapper.connection = Mongo::Connection.new('staff.mongohq.com', 10016)
 MongoMapper.database = 'restaurant'
 MongoMapper.database.authenticate(Secret.username, Secret.password)
 
+VALID_MINUTES = [0, 30]
+
 def copy_hash h 
     h2 = {}
     h.each_pair {|k,v| h2[k] = v }
@@ -70,12 +72,9 @@ class Restaurant
   end
 
   def valid_time? time
-    [0, 30].include? time.min
+    VALID_MINUTES.include? time.min
   end
 
-  def has_table? group
-    self.tables.has_key? group
-  end
 
   def get_open reservation
     reservation_tables = copy_hash reservation.tables
@@ -129,10 +128,20 @@ class Reservation
 
   belongs_to :restaurant
 
+  def has_table? group
+    self.tables.has_key? group
+  end
+
+
   def nearby_reservations count
     times = (-count..count).map {|i| self.time + 30 * 60 * i }
     times.map {|t| Reservation.first(:time => time) }
   end
+
+
+  def is_free? group
+    self.has_table? group and self.resertaurant.get_open(self)[group] > 0
+    
 
   def increment group 
     # Watch out! hashes are apparently static.
@@ -175,9 +184,6 @@ class RestaurantManager < Sinatra::Base
     haml :reservation
   end
     
-    
-                    
-
   get '/detail' do
     @restaurant = Restaurant.first(:name => params[:restaurant_name])
     @group = params[:group]
