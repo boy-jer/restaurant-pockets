@@ -1,5 +1,8 @@
 .content
   %h2 Where do you want to eat?
+  #h3= @settings
+  %h3= @files
+  %h3= @flies
       
   %form{:action => "/reservation"}
     %ul
@@ -9,30 +12,20 @@
             %option{:value => restaurant.name }= restaurant.name
 
       %li
+        %label{:for => "group"} Group:
         %select#group{:name => "group" }
           - (1..8).each do |group|
             %option{:value => group}= group
 
       %li
-        Date:
-        %input{:id => "datepicker", :type => "text"}
+        %label{:for => "date"} Date:
+        %input{:id => "datepicker", :name => "date", :type => "text"}
 
       %li
-        %label{:for => "year"} Year:
-        %input{:type => "text", :name => "year", :class => "text"}
-
-      %li
-        %label{:for => "month"} Month:
-        %input{:type => "text", :name => "month", :class => "text"}
-
-
-      %li
-        %label{:for => "day"} Day:
-        %input{:type => "text", :name => "dayh", :class => "text"}
-
-      %li
-        %label{:for => "hour"} Hour:
-        %input{:type => "text", :name => "hour", :class => "text"}
+        %label{:for => "time"} Time:
+        %select 
+          - @times.each do |time|
+            %option{:value => time}= time
 
       %li
         %input{:type => "submit"}
