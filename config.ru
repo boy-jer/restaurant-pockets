@@ -1,3 +1,3 @@
 require './controller'
-run Sinatra::Application
+run FakeTableApplication
 

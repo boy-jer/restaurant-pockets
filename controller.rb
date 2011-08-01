@@ -8,7 +8,7 @@ require './models'
 require './partial'
 require './secret'
 
-class RestaurantManager < Sinatra::Base
+class FakeTableApplication < Sinatra::Base
 
   enable :static
 

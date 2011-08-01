@@ -1,3 +1,3 @@
 require './controller'
 
-RestaurantManager.run!
+FakeTableApplication.run!
