@@ -1,6 +1,9 @@
 .content 
   %h2= @restaurant.name
-  %p= @restaurant.tables
+  %ul
+    - @restaurant.open_time_strings.each do |t|
+      %li= t
+    
 
 
 

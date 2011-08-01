@@ -4,12 +4,13 @@
   %form{:action => "/reservation"}
     %ul
       %li
-        %select#restaurants{:name => "name" }
+        %label{:for => "restaurant_id"} Restaurant:
+        %select#restaurants{:name => "restaurant" }
           - @restaurants.each do |restaurant|
             %option{:value => restaurant.name }= restaurant.name
 
       %li
-        %label{:for => "group"} Group:
+        %label{:for => "group"} Group size:
         %select#group{:name => "group" }
           - (1..8).each do |group|
             %option{:value => group}= group

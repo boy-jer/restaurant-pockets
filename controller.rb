@@ -12,8 +12,6 @@ def copy_hash h
     h2
 end
 
-
-
 class RestaurantManager < Sinatra::Base
 
   enable :static
@@ -24,14 +22,17 @@ class RestaurantManager < Sinatra::Base
 
   set :api_key, Secret.google_api_key
 
+  # Pick a restaurant, group size, and time
   get '/' do  
     @restaurants = Restaurant.all
     @times = Restaurant.all_times
     haml :index
   end
 
-  post '/add' do
-    name = params[:name]
+  # Detail page for a restaurant
+  get '/detail/:restaurant' do
+    @restaurant = Restaurant.first(:name => params[:restaurant])
+    haml :detail
   end
 
   get '/list' do
@@ -52,12 +53,6 @@ class RestaurantManager < Sinatra::Base
     haml :reservation
   end
     
-  get '/detail' do
-    @restaurant = Restaurant.first(:name => params[:restaurant_name])
-    @group = params[:group]
-    
-    haml :detail
-  end
 
   post '/reserve/:id/:year/:month/:day/:hour/:minute' do
     @restaurant = Restaurant.first(:id => id)
