@@ -12,7 +12,10 @@ END_TIME = 22
 
 VALID_MINUTES = [0, 30]
 
-
+def tuple_to_time_string(h,m)
+  "%s:%s" % [h, m == 0 ? "00" : "30"]
+end
+  
 class Restaurant 
   
   include MongoMapper::Document
@@ -27,12 +30,16 @@ class Restaurant
     Restaurant.get_open_times(0, 48)
   end
 
+  def self.all_time_strings
+    Restaurant.all_times.map {|a,b| tuple_to_time_string(a,b) }
+  end
+
   def self.get_open_times(s, e)
     (s...e).map {|e| [s + e/2, 30 * (e % 2)] }
   end
 
   def self.get_open_time_strings(s, e)
-    Restaurant.get_open_times(s,e).map {|a,b| "%s:%s" % [a, b == 0 ? "00" : "30"] }
+    Restaurant.get_open_times(s,e).map {|a,b| tuple_to_time_string(a,b) }
   end
   
   # Instance functions
