@@ -7,7 +7,14 @@ MongoMapper.database = 'restaurant'
 MongoMapper.database.authenticate(Secret.username, Secret.password)
 
 
+START_TIME = 12
+END_TIME = 22
+
+VALID_MINUTES = [0, 30]
+
+
 class Restaurant 
+  
   include MongoMapper::Document
 
   key :name, String
@@ -15,6 +22,27 @@ class Restaurant
 
   many :reservations
 
+  # Class methods
+  def self.all_times
+    self.get_open_times(0, 48)
+  end
+
+  def self.get_open_times(s, e)
+    (s...e).map {|e| [s + e/2, 30 * (e % 2)] }
+  end
+
+  def self.get_open_time_strings(s, e)
+    get_open_times(s,e).map {|a,b| "%s:%s" % [a, b == 0 ? "00" : "30"] }
+  end
+  
+  # Instance functions
+  def open_times
+    self.get_open_times(START_TIME, END_TIME)
+  end
+
+  def open_time_strings
+    self.get_open_time_strings(START_TIME, END_TIME)
+  end
 
   def get_tables
     copy_hash self.tables
