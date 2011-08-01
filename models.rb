@@ -80,7 +80,7 @@ class Restaurant
 
   def unavailable_slots group, time
     if self.table_exists? group
-      self.reservations_for_day(time).find_all {|r| r.no_table? group }.map {|e| [e.hour, e.min] }
+      self.reservations_for_day(time).find_all {|r| r.no_table? group }.map {|e| [e.time.hour, e.time.min] }
     else
       self.open_slots
     end
@@ -117,17 +117,6 @@ class Restaurant
     reservation_times = Set.new(self.reservation_times time)
     reservations = Reservation.where(:restaurant_id => self.id, 
                                      :time => { "$gt" => time, "$lt" => time + RESERVATION_TIME })
-    # Sometimes reservations should be less than 4, e.g. when the reservation is made an hour before closing.
-    # Unless we just create those and never use them?
-    if reservations.count < 4
-      uncreated = reservation_times - reservations.map {|e| [e.time.hour, e.time.min] }
-      uncreated.each { |t| self.get_or_create_reservation t }
-      self.get_reservations time
-    elsif reservations.count > 4
-      raise "There should not be more than 4"
-    else
-      reservations
-    end
   end
 
   def reservations_for_day time
