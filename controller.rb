@@ -1,4 +1,5 @@
 require 'haml'
+require 'json'
 require 'sass'
 require 'sinatra'
 
@@ -25,7 +26,7 @@ class RestaurantManager < Sinatra::Base
   # Pick a restaurant, group size, and time
   get '/' do  
     @restaurants = Restaurant.all
-    @times = Restaurant.all_times
+    @times = Restaurant.all_time_strings
     haml :index
   end
 
@@ -35,27 +36,16 @@ class RestaurantManager < Sinatra::Base
     haml :detail
   end
 
-  get '/list' do
-    @restaurants = Restaurant.all
-    haml :list
+  get '/reservation/'
   end
 
-  get '/reservation' do
-    @group = params[:group]
-    @restaurant = Restaurant.first(:name => params[:name])
-    time = Time.new(params[:year],
-                    params[:month],
-                    params[:day],
-                    params[:hour],
-                    0)
-    @reservation = @restaurant.reservations.first(:time => time)
-                    
-    haml :reservation
-  end
+  get '/openings/:restaurant/:group' do
+    content_type :json
+    @restaurant = Restaurant.first(:name => params[:restaurant])
+    open_slots = @restaurant.get_open_slots(params[:group])
+    { 
+      open_slots = []
+    }.to_json
+  end    
     
-
-  post '/reserve/:id/:year/:month/:day/:hour/:minute' do
-    @restaurant = Restaurant.first(:id => id)
-  end
-
 end
