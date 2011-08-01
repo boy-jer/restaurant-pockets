@@ -1,17 +1,12 @@
 require 'haml'
 require 'json'
 require 'sass'
+require 'set'
 require 'sinatra'
 
 require './models'
 require './partial'
 require './secret'
-
-def copy_hash h 
-    h2 = {}
-    h.each_pair {|k,v| h2[k] = v }
-    h2
-end
 
 class RestaurantManager < Sinatra::Base
 
@@ -26,7 +21,6 @@ class RestaurantManager < Sinatra::Base
   # Pick a restaurant, group size, and time
   get '/' do  
     @restaurants = Restaurant.all
-    @times = Restaurant.all_time_strings
     haml :index
   end
 
@@ -36,15 +30,26 @@ class RestaurantManager < Sinatra::Base
     haml :detail
   end
 
-  get '/reservation/'
+  
+
+  # The real page.
+  get '/reservation/' do
+    @restaurant = Restaurant.first(:name => params[:restaurant])
+    month, day, year = params[:date].split("/")
+    @group = params[:group]
+    @this_day = Time.mktime(year, month, day)
+    available = Set.new(@restaurant.available_slots(@group, @this_day))
+    z = Restaurant.open_time_strings.zip(Restaurant.open_times)
+    @slot_map = z.map {|str, arr| [str, available.include?(arr) ] }
+    haml :reservation
   end
 
-  get '/openings/:restaurant/:group' do
+  get '/openings/:restaurant/:group/:date/' do
     content_type :json
     @restaurant = Restaurant.first(:name => params[:restaurant])
     open_slots = @restaurant.get_open_slots(params[:group])
-    { 
-      open_slots = []
+    {
+      :open_slots => [],
     }.to_json
   end    
     

@@ -1,7 +1,7 @@
 .content
   %h2 Where do you want to eat?
       
-  %form{:action => "/reservation"}
+  %form{:action => "/reservation/"}
     %ul
       %li
         %label{:for => "restaurant_id"} Restaurant:
@@ -18,12 +18,6 @@
       %li
         %label{:for => "date"} Date:
         %input{:id => "datepicker", :name => "date", :type => "text"}
-
-      %li
-        %label{:for => "time"} Time:
-        %select 
-          - @times.each do |time|
-            %option{:value => time}= time
 
       %li
         %input{:type => "submit"}
