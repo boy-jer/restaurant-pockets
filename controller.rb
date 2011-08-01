@@ -6,7 +6,6 @@ require 'sinatra'
 
 require './models'
 require './partial'
-require './secret'
 
 class FakeTableApplication < Sinatra::Base
 
@@ -16,7 +15,7 @@ class FakeTableApplication < Sinatra::Base
   set :root, File.dirname(__FILE__)
   set :public, Proc.new { File.join(root, "static") }
 
-  set :api_key, Secret.google_api_key
+  set :api_key, ENV['sinatra_google_api_key']
 
   # Pick a restaurant, group size, and time
   get '/' do  
@@ -29,8 +28,6 @@ class FakeTableApplication < Sinatra::Base
     @restaurant = Restaurant.first(:name => params[:restaurant])
     haml :detail
   end
-
-  
 
   # The real page.
   get '/reservation/' do

@@ -1,11 +1,12 @@
 require 'mongo_mapper'
 require 'set'
 
-require './secret'
+mongo_username = ENV['mongo_username']
+mongo_password = ENV['mongo_password']
 
 MongoMapper.connection = Mongo::Connection.new('staff.mongohq.com', 10016)
 MongoMapper.database = 'restaurant'
-MongoMapper.database.authenticate(Secret.username, Secret.password)
+MongoMapper.database.authenticate(mongo_username, mongo_password)
 
 RESERVATION_TIME = 2 * 60 * 60 # 2 hours
 ONE_DAY = 24 * 60 * 60
