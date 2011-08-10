@@ -49,5 +49,14 @@ class FakeTableApplication < Sinatra::Base
       :open_slots => [],
     }.to_json
   end    
+
+  get '/add/restaurant/' do
+    haml :add_restaurant
+  end
+
+  post '/add/restaurant/' do 
+    redirect '/'
+  end
+
     
 end
