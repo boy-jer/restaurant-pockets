@@ -9,14 +9,18 @@
 
 
       %li{:class => "table_size" }
-        %label Table sizes:
+        %label{:for => "size"}Table size:
         %select.size{:name => "size" }
           - (1..8).each do |size|
             %option{:value => size}= size
 
+        %label{:for => "number"}tables:
         %select.number{:name => "number" }
           - (1..10).each do |number|
             %option{:value => number}= number
+
+      %li
+        %input{:type => "button", :value => "add another", :id => "add"}
 
       %li
         %input{:type => "submit"}

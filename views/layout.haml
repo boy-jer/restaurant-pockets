@@ -3,17 +3,13 @@
     %title FakeTable
     %meta{"http-equiv" => "Content-Type",  :content =>"text/html;charset=utf-8"}
  
-    %link{:rel =>"stylesheet", :href => "media/css/style.css", :type => "text/css", :media => "screen, print"}
-    %link{:rel =>"stylesheet", :href => "media/css/jquery.ui.datepicker.css", :type => "text/css", :media => "screen, print"}
+    %link{:rel =>"stylesheet", :href => "/media/css/style.css", :type => "text/css", :media => "screen, print"}
+    %link{:rel =>"stylesheet", :href => "/media/css/jquery.ui.datepicker.css", :type => "text/css", :media => "screen, print"}
 
     %script{:type => "text/javascript",  :src => "https://www.google.com/jsapi?key=#{settings.api_key}" }
     %script{:type => "text/javascript", :src => "https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"}
     %script{:type => "text/javascript", :src => "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"}
-
-    :javascript
-      jQuery(function(){
-          $( "#datepicker" ).datepicker();
-      });
+    %script{:type => "text/javascript", :src => "/media/js/script.js"}
 
   %body
     = yield
