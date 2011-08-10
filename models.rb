@@ -69,6 +69,13 @@ class Restaurant
     Restaurant.open_times.map {|a,b| Restaurant.time_tuple_to_string(a,b) }
   end
 
+  # This is a list of time, boolean pairs for deciding whether reservation
+  # button is active or inactive.
+  def slot_tuples group, time
+    available = Set.new(self.available_slots(group, time))
+    zipped = Restaurant.open_time_strings.zip(Restaurant.open_times)
+    zipped.map {|str, arr| [str, available.include?(arr) ] }
+  end
 
   # Public methods
   def open_slots
@@ -90,7 +97,7 @@ class Restaurant
   # Check that a table is available for the necessary length of time.
   def is_available?(group, time)
     self.open_slots.include? [time.hour, time.min] and 
-      self.get_reservations(time).reduce {|acc, res| acc and res.open_table? group }
+      self.get_reservations(time).reduce(true) {|acc, res| acc and res.open_table? group }
       
   end
 
@@ -127,7 +134,7 @@ class Restaurant
   end
 
   def reservation_times(time)
-    (0...4).map {|min| time + min * 30 }
+    (0...4).map {|min| time + (min * 60) * 30  }
   end
 
   def get_or_create_reservation time
