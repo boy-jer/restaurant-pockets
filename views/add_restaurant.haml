@@ -1,0 +1,24 @@
+.content
+      
+  %form{:action => "/add/restaurant/"}
+    %ul
+
+      %li
+        %label{:for => "name"} Name:
+        %input{:id => "restaurant_name", :name => "name", :type => "text"}
+
+
+      %li{:class => "table_size" }
+        %label Table sizes:
+        %select.size{:name => "size" }
+          - (1..8).each do |size|
+            %option{:value => size}= size
+
+        %select.number{:name => "number" }
+          - (1..10).each do |number|
+            %option{:value => number}= number
+
+      %li
+        %input{:type => "submit"}
+
+            
